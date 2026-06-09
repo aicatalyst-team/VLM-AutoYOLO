@@ -3,8 +3,9 @@ FROM registry.access.redhat.com/ubi9/python-312
 
 WORKDIR /opt/app-root/src
 
-# Install system dependencies
 USER 0
+
+# Install system dependencies
 RUN dnf install -y libpq-devel gcc python3-devel && dnf clean all
 
 # Copy requirements first for caching
@@ -14,7 +15,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir \
     torch --extra-index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir \
-    fastapi uvicorn[standard] sqlalchemy psycopg2-binary pydantic-settings \
+    fastapi "uvicorn[standard]" sqlalchemy psycopg2-binary pydantic-settings \
     transformers Pillow opencv-python-headless numpy python-multipart \
     huggingface_hub ultralytics alembic lmdb peft
 
@@ -24,13 +25,11 @@ COPY alembic.ini .
 COPY alembic ./alembic
 COPY decord_stub.py /opt/app-root/lib/python3.12/site-packages/decord.py
 
-# OpenShift compatibility
-RUN chgrp -R 0 /opt/app-root && chmod -R g=u /opt/app-root
-
 # Create directories for uploads and models
-RUN mkdir -p /opt/app-root/src/uploads /opt/app-root/src/model /opt/app-root/src/training_runs && \
-    chgrp -R 0 /opt/app-root/src/uploads /opt/app-root/src/model /opt/app-root/src/training_runs && \
-    chmod -R g=u /opt/app-root/src/uploads /opt/app-root/src/model /opt/app-root/src/training_runs
+RUN mkdir -p /opt/app-root/src/uploads /opt/app-root/src/model /opt/app-root/src/training_runs
+
+# OpenShift compatibility - only on app directories, not entire /opt/app-root
+RUN chgrp -R 0 /opt/app-root/src && chmod -R g=u /opt/app-root/src
 
 ENV PYTHONPATH=/opt/app-root/src \
     PYTHONUNBUFFERED=1
