@@ -1,26 +1,10 @@
-# Dependencies
+.git
+LICENSE
+kubernetes/
+poc-plan.md
+poc-report.md
+docs/
+__pycache__/
+.env*
+*.pyc
 node_modules/
-
-# Build output
-dist/
-
-# Git
-.git/
-.gitignore
-
-# Environment
-.env
-.env.*
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Test
-coverage/

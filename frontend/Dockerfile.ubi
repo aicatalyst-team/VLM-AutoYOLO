@@ -1,0 +1,39 @@
+# VLM-AutoYOLO Frontend - UBI multi-stage build
+FROM registry.access.redhat.com/ubi9/nodejs-22 AS builder
+
+WORKDIR /opt/app-root/src
+
+# Install pnpm
+USER 0
+RUN npm install -g pnpm
+USER 1001
+
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy source code
+COPY . .
+
+# Build application
+RUN pnpm build
+
+# Production stage with UBI nginx
+FROM registry.access.redhat.com/ubi9/nginx-124
+
+# Copy built assets
+COPY --from=builder /opt/app-root/src/dist /opt/app-root/src
+
+# Copy OpenShift-compatible nginx configuration
+COPY nginx-openshift.conf /etc/nginx/nginx.conf
+
+# OpenShift compatibility
+USER 0
+RUN chgrp -R 0 /opt/app-root && chmod -R g=u /opt/app-root
+USER 1001
+
+EXPOSE 8080
+
+CMD ["nginx", "-g", "daemon off;"]

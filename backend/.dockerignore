@@ -1,45 +1,10 @@
-# Python
-.venv/
-.venv-sam3/
-sam3-venv/
+.git
+LICENSE
+kubernetes/
+poc-plan.md
+poc-report.md
+docs/
 __pycache__/
+.env*
 *.pyc
-*.pyo
-*.egg-info/
-dist/
-build/
-
-# Tests
-tests/
-
-# Git
-.git/
-.gitignore
-
-# Environment
-.env
-.env.*
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Data
-uploads/
-training_runs/
-trained_models/
-model/
-pretrained/
-external_models/
-import_chunks/
-import_progress/
-*.db
-*.sqlite
-*.sqlite3
-*.log
+node_modules/
